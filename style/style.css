@@ -8,32 +8,32 @@
    1) ROOT VARIABLES
    =========================================================== */
 :root {
-  --bg: #f4f4f4;
-  --text: #1a1a1a;
+  --bg: #0a0b11;
+  --text: #e6e8ed;
 
   /* Brand */
-  --accent: rgb(130, 0, 0);
-  --accent-hover: rgb(160, 10, 10);
-  --pr-red: rgb(130, 0, 0); /* alias for legacy/team pages */
+  --accent: #820000;
+  --accent-hover: #a00000;
+  --pr-red: #820000;
 
   /* Layout */
-  --section-bg: #ffffff;
+  --section-bg: #11131d;
   --accent-light: rgba(130, 0, 0, 0.15);
 
   /* Borders */
-  --border: #cfcfcf;
+  --border: #30333d;
 
   /* Navigation */
-  --nav-bg: #1a1a1a;
-  --nav-link: #ffffff;
+  --nav-bg: #11131d;
+  --nav-link: #e6e8ed;
 
   /* Footer */
-  --footer-bg: #222;
-  --footer-text: #aaa;
+  --footer-bg: #11131d;
+  --footer-text: #858b9c;
 
   /* Links & icons */
-  --icon-color: #1a1a1a;
-  --link-color: #1a1a1a;
+  --icon-color: #9ba1b1;
+  --link-color: #e6e8ed;
   --link-hover: var(--accent);
 }
 
@@ -42,20 +42,19 @@
    2) DARK THEME
    =========================================================== */
 [data-theme="dark"] {
-  --bg: #121212;
-  --text: #f4f4f4;
+  --bg: #0a0b11;
+  --text: #e6e8ed;
 
-  --section-bg: #1e1e1e;
-  --accent-light: rgba(255, 90, 90, 0.15);
+  --section-bg: #11131d;
 
-  --nav-bg: #000;
+  --nav-bg: #11131d;
   --nav-link: #fff;
 
-  --footer-bg: #000;
-  --footer-text: #777;
+  --footer-bg: #11131d;
+  --footer-text: #858b9c;
 
-  --icon-color: #f4f4f4;
-  --link-color: #f4f4f4;
+  --icon-color: #9ba1b1;
+  --link-color: #e6e8ed;
 }
 
 
@@ -63,6 +62,8 @@
    3) GLOBAL RESET & BASE
    =========================================================== */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
@@ -70,11 +71,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.6;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  line-height: 1.5;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 main {
@@ -83,8 +84,7 @@ main {
 
 a {
   color: var(--link-color);
-  text-decoration: underline;
-  transition: color 0.3s ease;
+  transition: color 0.15s ease;
 }
 
 a:hover {
@@ -93,6 +93,10 @@ a:hover {
 
 ul {
   padding-left: 20px;
+}
+
+h1, h2, h3 {
+  color: #eeeeee;
 }
 
 .flag {
@@ -114,14 +118,15 @@ ul {
 }
 
 section {
-  margin: 4rem 0;
+  margin: 28px 0;
 }
 
 section h2 {
   color: var(--accent);
   border-bottom: 1px solid var(--border);
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 7px;
 }
 
 
@@ -129,21 +134,23 @@ section h2 {
    5) HEADER
    =========================================================== */
 header {
-  background: var(--accent);
-  color: #fff;
+  background: #11131d;
+  border-bottom: 1px solid var(--border);
+  color: #eeeeee;
   text-align: center;
-  padding: 70px 1rem 2rem;
+  padding: 82px 1rem 28px;
 }
 
 header h1 {
   margin: 0;
-  font-size: 2.7rem;
+  font-size: 27px;
+  line-height: 1.2;
 }
 
 header p {
-  opacity: 0.9;
-  margin-top: 0.5rem;
-  font-style: italic;
+  color: #858b9c;
+  margin-top: 9px;
+  font-size: 13px;
 }
 
 
@@ -155,9 +162,8 @@ header p {
   top: 0;
   width: 100%;
   height: 50px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
   z-index: 1000;
 
   display: flex;
@@ -166,9 +172,9 @@ header p {
 }
 
 .nav-container {
-  max-width: 1100px;
+  max-width: 1200px;
   width: 100%;
-  padding: 0 1.5rem;
+  padding: 0 20px;
 
   display: flex;
   align-items: center;
@@ -176,7 +182,7 @@ header p {
 }
 
 .nav-logo img {
-  height: 36px;
+  height: 34px;
   transition: transform 0.3s ease;
 }
 
@@ -187,24 +193,29 @@ header p {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 1.8rem;
+  gap: 0;
 }
 
 .nav-links a {
+  display: block;
+  padding: 13px 15px;
+  color: #9ba1b1;
   text-decoration: none;
-  color: var(--nav-link);
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .nav-links a:hover {
-  color: var(--accent);
+  color: #eeeeee;
+  background: rgba(255,255,255,0.025);
 }
 
 .nav-toggle {
   display: none;
   cursor: pointer;
-  color: white;
-  font-size: 1.8rem;
+  color: #eeeeee;
+  font-size: 22px;
 }
 
 
@@ -214,7 +225,7 @@ header p {
 .nav-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.62);
   backdrop-filter: blur(10px);
   opacity: 0;
   pointer-events: none;
@@ -235,10 +246,10 @@ header p {
   max-width: 300px;
   height: 100vh;
 
-  background: rgba(0, 0, 0, 0.04);
+  background: #11131d;
   backdrop-filter: blur(10px);
 
-  padding: 2rem 1.5rem;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
 
@@ -251,14 +262,17 @@ header p {
 }
 
 .nav-panel a {
-  font-size: 1.1rem;
-  padding: 0.6rem 0;
-  color: #fff;
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px 0;
+  color: #9ba1b1;
   text-decoration: none;
+  border-bottom: 1px solid #242730;
 }
 
 .nav-panel a:hover {
-  color: var(--accent);
+  color: #eeeeee;
 }
 
 .nav-close {
@@ -274,20 +288,21 @@ header p {
    =========================================================== */
 .news-grid {
   display: grid;
-  gap: 2rem;
+  gap: 10px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 1rem;
+  margin: 28px auto;
+  padding: 0 20px;
 }
 
 .news-card {
   background: var(--section-bg);
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
   overflow: hidden;
 
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.25s ease, box-shadow 0.3s ease;
+  box-shadow: none;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 
   opacity: 0;
   transform: translateY(20px);
@@ -295,8 +310,9 @@ header p {
 }
 
 .news-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 14px rgba(0,0,0,0.25);
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  background: #151722;
 }
 
 .news-card img {
@@ -306,12 +322,12 @@ header p {
 }
 
 .news-card-content {
-  padding: 1rem 1.2rem;
+  padding: 15px;
 }
 
 .news-card h3 {
   margin: 0.3rem 0;
-  color: var(--accent);
+  color: #eeeeee;
 }
 
 .news-card small {
@@ -339,9 +355,9 @@ header p {
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: #111;
-  color: #aaa;
-  border: 1px solid #222;
+  background: #11131d;
+  color: #9ba1b1;
+  border: 1px solid var(--border);
   text-decoration: none;
   font-size: 14px;
 }
@@ -357,8 +373,9 @@ header p {
 }
 
 .tab:hover {
-  color: white;
+  color: #eeeeee;
   border-color: var(--accent);
+  background: #151722;
 }
 
 .tab:hover .tab-icon {
@@ -366,8 +383,9 @@ header p {
 }
 
 .tab.active {
-  color: white;
+  color: #ffffff;
   border-color: var(--accent);
+  background: #151722;
 }
 
 .tab.active .tab-icon {
@@ -379,11 +397,9 @@ header p {
    10) TEAM PAGE
    =========================================================== */
 .page {
-  max-width: 1000px;
-  margin: 40px auto;
-  background: var(--section-bg);
-  padding: 24px;
-  border: 1px solid var(--border);
+  max-width: none;
+  margin: 28px 320px 28px 0;
+  padding: 0 20px 50px;
 }
 
 .page-title {
@@ -394,10 +410,11 @@ header p {
 
 .infobox {
   float: right;
-  width: 280px;
+  width: 300px;
   border: 1px solid var(--border);
   margin-left: 20px;
-  background: #fafafa;
+  margin-right: -320px;
+  background: #151722;
 }
 
 .infobox h2 {
@@ -409,7 +426,7 @@ header p {
 }
 
 .infobox-image {
-  background: #111;
+  background: #0a0b11;
   padding: 10px;
   text-align: center;
   border-bottom: 1px solid var(--border);
@@ -417,7 +434,9 @@ header p {
 
 .infobox-image img {
   max-width: 100%;
+  max-height: 220px;
   height: auto;
+  object-fit: contain;
 }
 
 .infobox table {
@@ -428,6 +447,7 @@ header p {
 .infobox td {
   padding: 6px;
   border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
 }
 
 
@@ -444,11 +464,12 @@ header p {
   display: flex;
   gap: 12px;
   padding: 12px;
-  background: #fff;
+  background: #11131d;
+  border: 1px solid var(--border);
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.25s ease, box-shadow 0.3s ease;
+  box-shadow: none;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 
   opacity: 0;
   transform: translateY(20px);
@@ -456,8 +477,9 @@ header p {
 }
 
 .team-card:hover{
-  transform: translateY(-5px);
-  box-shadow: 0 8px 14px rgba(0,0,0,0.25);
+  transform: translateY(-1px);
+  background: #151722;
+  box-shadow: none;
 }
 
 .team-card img {
@@ -487,9 +509,10 @@ header p {
 }
 
  .member-card {
-  background: linear-gradient(145deg, #8b0000, #400000);
-  border-radius: 18px;
-  padding: 20px;
+  background: #11131d;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 15px;
   width: 220px;
   text-align: center;
   color: white;
@@ -497,19 +520,21 @@ header p {
   transform-style: preserve-3d;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  box-shadow: none;
   will-change: transform;
 }
 
 .member-card img {
   width: 100%;
-  border-radius: 12px;
+  border-radius: 5px;
   transition: 0.4s ease;
 }
 
 .member-card:hover {
-  transform: translateY(-12px) scale(1.05);
-  box-shadow: 0 25px 50px rgba(130,0,0,0.8);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: #151722;
+  box-shadow: none;
 }
 
 .member-card:hover img {
@@ -810,9 +835,9 @@ header p {
 .player-info {
   width: 100%;
   max-width: 1200px;
-  margin: 100px auto;
-  padding: 0 60px;
-  color: #000000;
+  margin: 28px auto;
+  padding: 0 20px;
+  color: var(--text);
 }
 
 .info-title {
@@ -841,7 +866,7 @@ header p {
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.55);
+  color: #858b9c;
 }
 
 .info-value {
@@ -869,8 +894,9 @@ header p {
 footer {
   background: var(--footer-bg);
   color: var(--footer-text);
-  padding: 4rem 1rem 2rem;
-  margin-top: 4rem;
+  padding: 28px 20px 20px;
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
 }
 
 .footer-content {
@@ -878,18 +904,18 @@ footer {
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 3rem;
+  gap: 20px;
 }
 
 .footer-column {
   flex: 1;
-  min-width: 240px;
+  min-width: 200px;
 }
 
 .footer-column h3 {
   color: var(--accent);
-  margin-bottom: 1rem;
-  font-size: 1rem;
+  margin-bottom: 8px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -903,20 +929,23 @@ footer a:hover {
 }
 
 .footer-social {
-  margin-top: 1rem;
+  margin-top: 10px;
   display: flex;
   gap: 1rem;
 }
 
 .footer-social a {
-  font-size: 1.7rem;
+  color: #858b9c !important;
+  font-size: 17px;
 }
 
 .footer-bottom {
-  margin-top: 3rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.85rem;
+  max-width: 1200px;
+  margin: 24px auto 0;
+  padding-top: 11px;
+  border-top: 1px solid #242730;
+  color: #555b69;
+  font-size: 9px;
 }
 
 
@@ -959,4 +988,18 @@ footer a:hover {
     max-width: 350px;
   }
 
+  .page {
+    margin-right: 0;
+  }
+
+}
+
+@media (max-width: 1100px) and (min-width: 801px) {
+  .page {
+    margin-right: 0;
+  }
+
+  .infobox {
+    margin-right: 0;
+  }
 }
