@@ -2121,43 +2121,43 @@
 
         <tbody>
 
-          <tr data-home="Polacy Rodacy"
-    data-away="Overcome"
-    data-score="—">
+              <tr data-home="Polacy Rodacy"
+            data-away="Overcome"
+            data-score="1:1|FF:W">
             <td><a href="polacyrodacy.html">Polacy Rodacy</a></td>
-            <td>—</td>
+            <td>L1:1W<br>FF:W</td>
             <td><a href="https://overcome-ovc.github.io/home/">Overcome</a></td>
           </tr>
 
           <tr data-home="Turkish Home Academy"
     data-away="ZeroFear"
-    data-score="—">
+    data-score="3:0">
             <td><a href="#">THO Academy</a></td>
-            <td>—</td>
+            <td>3:0</td>
             <td><a href="zerofear.html">ZeroFear</a></td>
           </tr>
 
           <tr data-home="ITG"
     data-away="Kryon Esports"
-    data-score="—">
+    data-score="0:3">
             <td><a href="#">ITG</a></td>
-            <td>—</td>
+            <td>0:3</td>
             <td><a href="#">Kryon Esports</a></td>
           </tr>
 
           <tr data-home="CELEST"
     data-away="Turkish Home"
-    data-score="—">
+    data-score="3:0">
             <td><a href="celest.html">CELEST</a></td>
-            <td>—</td>
+            <td>3:0</td>
             <td><a href="#">Turkish Home</a></td>
           </tr>
 
           <tr data-home="MST"
     data-away="Phonk Demons"
-    data-score="—">
+    data-score="0:3">
             <td><a href="#">MST</a></td>
-            <td>—</td>
+            <td>0:3</td>
             <td><a href="#">Phonk Demons</a></td>
           </tr>
 
@@ -2753,10 +2753,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      TEAM ALIASES
-     =========================================================
-     
-     Allows match data to use shorter names without
-     breaking the standings.
      ========================================================= */
 
   const teamAliases = {
@@ -2834,16 +2830,18 @@ document.addEventListener("DOMContentLoaded", () => {
   function processMatch(standing, match) {
 
     let home =
-      match.dataset.home;
+      normalizeTeamName(match.dataset.home);
 
     let away =
-      match.dataset.away;
+      normalizeTeamName(match.dataset.away);
 
     const score =
       match.dataset.score;
 
 
-    /* Ignore incomplete matches */
+    /* =====================================================
+       IGNORE INCOMPLETE MATCHES
+       ===================================================== */
 
     if (
       !home ||
@@ -2858,16 +2856,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* Normalize aliases */
-
-    home =
-      normalizeTeamName(home);
-
-    away =
-      normalizeTeamName(away);
-
-
-    /* Find teams */
+    /* =====================================================
+       FIND TEAMS
+       ===================================================== */
 
     const homeTeam =
       standing.find(
@@ -2880,7 +2871,9 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    /* Unknown team */
+    /* =====================================================
+       UNKNOWN TEAM
+       ===================================================== */
 
     if (
       !homeTeam ||
@@ -2899,41 +2892,189 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       FORFEIT
-       =====================================================
+       MULTI-STAGE MATCH
 
-       W:FF = 3:0
+       Example:
 
-       Winner:
-       +1 W
-       +3 points
-       +3 sets
+       1:1|FF:W
 
-       Loser:
-       +1 L
-       -3 points
-       +0 sets
+       First stage:
+       1:1
+
+       Final:
+       FF:W
+
+       Final sets:
+       1:3
+
+       Points:
+       PR  = -2
+       OVC = +2
        ===================================================== */
 
+    if (score.includes("|")) {
 
-    if (score === "W:FF") {
-
-      homeTeam.wins++;
-
-      homeTeam.points += 3;
-
-      homeTeam.setsWon += 3;
-
-      homeTeam.setsLost += 0;
+      const stages =
+        score
+          .split("|")
+          .map(stage => stage.trim());
 
 
-      awayTeam.losses++;
+      let homeSets = 0;
+      let awaySets = 0;
 
-      awayTeam.points -= 3;
 
-      awayTeam.setsWon += 0;
+      let homeWon = false;
+      let awayWon = false;
 
-      awayTeam.setsLost += 3;
+
+      stages.forEach(stage => {
+
+
+        /* =================================================
+           FORFEIT
+           ================================================= */
+
+        if (stage === "W:FF") {
+
+          /*
+             W:FF means the home team
+             wins the remaining match.
+
+             For the set score this completes
+             the home team's score to 3.
+          */
+
+           homeSets += Math.max(0, 3 - homeSets);
+
+          homeWon = true;
+
+          return;
+
+        }
+
+
+        if (stage === "FF:W") {
+
+          /*
+             FF:W means the away team
+             wins the remaining match.
+
+             For the set score this completes
+             the away team's score to 3.
+          */
+
+           awaySets += Math.max(0, 3 - awaySets);
+
+          awayWon = true;
+
+          return;
+
+        }
+
+
+        /* =================================================
+           NORMAL STAGE
+           ================================================= */
+
+        const parts =
+          stage.split(":");
+
+
+        if (parts.length !== 2) {
+
+          console.warn(
+            "Invalid stage:",
+            stage
+          );
+
+          return;
+
+        }
+
+
+        const homeScore =
+          parseInt(parts[0], 10);
+
+        const awayScore =
+          parseInt(parts[1], 10);
+
+
+        if (
+          Number.isNaN(homeScore) ||
+          Number.isNaN(awayScore)
+        ) {
+
+          console.warn(
+            "Invalid stage:",
+            stage
+          );
+
+          return;
+
+        }
+
+
+        homeSets += homeScore;
+        awaySets += awayScore;
+
+      });
+
+
+      /* =================================================
+         FINAL SETS
+         ================================================= */
+
+      homeTeam.setsWon += homeSets;
+      homeTeam.setsLost += awaySets;
+
+      awayTeam.setsWon += awaySets;
+      awayTeam.setsLost += homeSets;
+
+
+      /* =================================================
+         MATCH RESULT
+         ================================================= */
+
+      if (homeWon) {
+
+        homeTeam.wins++;
+        awayTeam.losses++;
+
+      }
+
+      else if (awayWon) {
+
+        awayTeam.wins++;
+        homeTeam.losses++;
+
+      }
+
+
+      /* =================================================
+         POINTS
+
+         For a match ending with FF:
+
+         Final score:
+         1:3
+
+         Home:
+         1 - 3 = -2
+
+         Away:
+         3 - 1 = +2
+         ================================================= */
+
+      if (homeWon || awayWon) {
+
+        homeTeam.points +=
+          homeSets - awaySets;
+
+        awayTeam.points +=
+          awaySets - homeSets;
+
+      }
 
 
       return;
@@ -2942,10 +3083,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       FORFEIT
+       SIMPLE FORFEIT
 
+       W:FF = 3:0
        FF:W = 0:3
        ===================================================== */
+
+    if (score === "W:FF") {
+
+      homeTeam.wins++;
+
+      homeTeam.points += 3;
+
+      homeTeam.setsWon += 3;
+      homeTeam.setsLost += 0;
+
+
+      awayTeam.losses++;
+
+      awayTeam.points -= 3;
+
+      awayTeam.setsWon += 0;
+      awayTeam.setsLost += 3;
+
+
+      return;
+
+    }
+
 
     if (score === "FF:W") {
 
@@ -2954,7 +3119,6 @@ document.addEventListener("DOMContentLoaded", () => {
       homeTeam.points -= 3;
 
       homeTeam.setsWon += 0;
-
       homeTeam.setsLost += 3;
 
 
@@ -2963,7 +3127,6 @@ document.addEventListener("DOMContentLoaded", () => {
       awayTeam.points += 3;
 
       awayTeam.setsWon += 3;
-
       awayTeam.setsLost += 0;
 
 
@@ -2999,7 +3162,9 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(parts[1], 10);
 
 
-    /* Invalid score */
+    /* =====================================================
+       INVALID SCORE
+       ===================================================== */
 
     if (
       Number.isNaN(homeScore) ||
@@ -3018,35 +3183,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        SETS
+
+       Example:
+
+       3:2
+
+       Home:
+       +3 won
+       +2 lost
+
+       Away:
+       +2 won
+       +3 lost
        ===================================================== */
 
     homeTeam.setsWon += homeScore;
-
     homeTeam.setsLost += awayScore;
 
-
     awayTeam.setsWon += awayScore;
-
     awayTeam.setsLost += homeScore;
 
 
     /* =====================================================
        POINTS
-       =====================================================
 
        Every won set = 1 point.
 
-       3:2
-       Winner = +3
-       Loser  = +2
-
-       3:0
-       Winner = +3
-       Loser  = 0
+       3:0 -> +3 / 0
+       3:1 -> +3 / +1
+       3:2 -> +3 / +2
        ===================================================== */
 
     homeTeam.points += homeScore;
-
     awayTeam.points += awayScore;
 
 
@@ -3060,7 +3228,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
       homeTeam.wins++;
-
       awayTeam.losses++;
 
     }
@@ -3071,7 +3238,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
       awayTeam.wins++;
-
       homeTeam.losses++;
 
     }
@@ -3087,7 +3253,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     standing.sort((a, b) => {
 
-      /* 1. Points */
+      /* =====================================================
+         1. POINTS
+         ===================================================== */
 
       if (
         b.points !==
@@ -3102,7 +3270,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* 2. Set difference */
+      /* =====================================================
+         2. SET DIFFERENCE
+         ===================================================== */
 
       const diffA =
         a.setsWon -
@@ -3126,7 +3296,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* 3. Sets won */
+      /* =====================================================
+         3. SETS WON
+         ===================================================== */
 
       if (
         b.setsWon !==
@@ -3141,7 +3313,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* 4. Wins */
+      /* =====================================================
+         4. WINS
+         ===================================================== */
 
       if (
         b.wins !==
@@ -3156,7 +3330,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* 5. Alphabetical fallback */
+      /* =====================================================
+         5. ALPHABETICAL
+         ===================================================== */
 
       return a.team.localeCompare(
         b.team
@@ -3180,7 +3356,9 @@ document.addEventListener("DOMContentLoaded", () => {
       createStanding();
 
 
-    /* Process all weeks up to selected week */
+    /* =====================================================
+       PROCESS ALL MATCH WEEKS UP TO SELECTED WEEK
+       ===================================================== */
 
     for (
       let i = 0;
@@ -3210,6 +3388,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+
+    /* =====================================================
+       SORT
+       ===================================================== */
 
     return sortStanding(
       standing
@@ -3296,7 +3478,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* No results yet */
+    /* =====================================================
+       NO RESULTS YET
+       ===================================================== */
 
     if (
       currentWeek === 0
@@ -3322,6 +3506,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const map = {};
 
+
     standing.forEach(
       (team, index) => {
 
@@ -3339,26 +3524,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      MOVEMENT
-     =========================================================
-
-     Example:
-
-     Previous position: 5
-     Current position: 2
-
-     → ↑ 3
-
-     Previous position: 2
-     Current position: 6
-
-     → ↓ 4
-
-     Same position:
-
-     → —
-     
-     MW 1:
-     → —
      ========================================================= */
 
   function getMovement(
@@ -3367,7 +3532,10 @@ document.addEventListener("DOMContentLoaded", () => {
     previousPositions
   ) {
 
-    /* No previous week */
+
+    /* =====================================================
+       NO PREVIOUS WEEK
+       ===================================================== */
 
     if (!previousPositions) {
 
@@ -3387,7 +3555,9 @@ document.addEventListener("DOMContentLoaded", () => {
       previousPositions[teamName];
 
 
-    /* Team wasn't present before */
+    /* =====================================================
+       TEAM WASN'T PRESENT BEFORE
+       ===================================================== */
 
     if (
       !previousPosition
@@ -3410,7 +3580,9 @@ document.addEventListener("DOMContentLoaded", () => {
       currentPosition;
 
 
-    /* Moved UP */
+    /* =====================================================
+       MOVED UP
+       ===================================================== */
 
     if (movement > 0) {
 
@@ -3428,7 +3600,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* Moved DOWN */
+    /* =====================================================
+       MOVED DOWN
+       ===================================================== */
 
     if (movement < 0) {
 
@@ -3446,7 +3620,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* Same position */
+    /* =====================================================
+       SAME POSITION
+       ===================================================== */
 
     return {
 
@@ -3483,7 +3659,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* Current standing */
+    /* =====================================================
+       CURRENT STANDING
+       ===================================================== */
 
     const standing =
       calculateStanding(
@@ -3491,7 +3669,9 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    /* Previous standing */
+    /* =====================================================
+       PREVIOUS STANDING
+       ===================================================== */
 
     let previousPositions =
       null;
@@ -3513,7 +3693,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* Clear table */
+    /* =====================================================
+       CLEAR TABLE
+       ===================================================== */
 
     tbody.innerHTML = "";
 
@@ -3703,7 +3885,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "click",
         () => {
 
-          /* Remove active */
+
+          /* =================================================
+             REMOVE ACTIVE
+             ================================================= */
 
           switches.forEach(
             btn => {
@@ -3716,14 +3901,18 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
 
-          /* Activate selected button */
+          /* =================================================
+             ACTIVATE SELECTED BUTTON
+             ================================================= */
 
           button.classList.add(
             "active"
           );
 
 
-          /* Determine week */
+          /* =================================================
+             DETERMINE WEEK
+             ================================================= */
 
           let week;
 
@@ -3749,7 +3938,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
 
-          /* Render */
+          /* =================================================
+             RENDER
+             ================================================= */
 
           renderStanding(
             week
@@ -3770,7 +3961,9 @@ document.addEventListener("DOMContentLoaded", () => {
     getCurrentWeek();
 
 
-  /* Activate current MW */
+  /* =========================================================
+     ACTIVATE CURRENT MW
+     ========================================================= */
 
   switches.forEach(
     button => {
@@ -3795,7 +3988,9 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  /* Render */
+  /* =========================================================
+     INITIAL RENDER
+     ========================================================= */
 
   renderStanding(
     currentWeek

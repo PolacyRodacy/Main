@@ -68,12 +68,6 @@
     <li><a href="/Main/teams.html">Teams</a></li>
   </ul>
   </div>
-<div class="intro">
-  <div class="intro-mask">
-    <div class="nick-wall"></div>
-  </div>
-</div>
-
 </div>
   <header>
     <h1>Polacy Rodacy</h1>
@@ -87,58 +81,9 @@
 </div>
 
 <script>
-const intro = document.querySelector(".intro");
-const wall = document.querySelector(".nick-wall");
-
 const bg = document.querySelector(".bg-name");
 const char = document.querySelector(".character");
 const nickMain = document.querySelector(".player-nick");
-
-const COLS = 6;
-const ROWS = 11;
-let currentRow = 0;
-
-// create columns
-const columns = [];
-for (let i = 0; i < COLS; i++) {
-  const col = document.createElement("div");
-  col.className = "nick-column";
-  wall.appendChild(col);
-  columns.push(col);
-}
-
-// add rows like CR
-function addRow() {
-  columns.forEach(col => {
-    const n = document.createElement("div");
-    n.className = "nick";
-    n.innerText = "Igmen";
-    col.appendChild(n);
-
-    if (col.children.length > ROWS) {
-      col.removeChild(col.firstChild);
-    }
-
-    requestAnimationFrame(() => {
-      n.style.opacity = "1";
-      n.style.transform = "translateY(0)";
-    });
-  });
-
-  currentRow++;
-
-  if (currentRow < ROWS) {
-    setTimeout(addRow, 45);
-  } else {
-    setTimeout(startWipe, 80);
-  }
-}
-
-// slide wall out
-function startWipe() {
-  intro.classList.add("hide");
-  setTimeout(startCharacterIntro, 1000);
-}
 
 // show player
 function startCharacterIntro() {
@@ -153,7 +98,7 @@ function startCharacterIntro() {
 
 
 
-window.addEventListener("load", addRow);
+window.addEventListener("load", startCharacterIntro);
 </script>
 
 
